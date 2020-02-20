@@ -132,6 +132,8 @@ proc main =
     w.destroy()
     glfw.terminate()
 
+  w.lockKeyMods = true
+
   setControlCHook(proc() {.noconv.} = done = true)
 
   w.registerWindowCallbacks()

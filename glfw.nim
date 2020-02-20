@@ -110,17 +110,6 @@ iterator pairs*(p: PathDropInfo): (int32, cstring) =
 converter toHandle(m: Monitor): MonitorHandle = m.handle
 converter toHandle(w: Window): WindowHandle = w.handle
 
-proc initModifierKeySet(bitfield: int): set[ModifierKey] =
-  # XXX: This should not be necessary just because the enum type has
-  # non-consecutive elements.
-  let mods = [ModifierKey.mkShift, ModifierKey.mkCtrl, ModifierKey.mkAlt,
-              ModifierKey.mkSuper, ModifierKey.mkCapsLock,
-              ModifierKey.mkNumLock]
-  for m in mods:
-    let bit = (bitfield.int and m.int)
-    if bit != 0:
-      result.incl(bit.ModifierKey)
-
 type
   ErrorType* {.size: int32.sizeof.} = enum
     getNoError = (0, "no error")
@@ -735,7 +724,8 @@ proc newWindow*(c = DefaultOpenglWindowConfig): Window =
   mouseButtonCb = proc(
       handle: WindowHandle, button, pressed, modKeys: int32) {.cdecl.} =
     if get(mouseButtonCb):
-      cb(win, MouseButton(button), pressed.bool, initModifierKeySet(modKeys))
+      cb(win, MouseButton(button), pressed.bool,
+         cast[set[ModifierKey]](modKeys))
   discard wrapper.setMouseButtonCallback(result, mouseButtonCb)
 
   cursorPositionCb = proc(handle: WindowHandle, x, y: cdouble) {.cdecl.} =
@@ -757,7 +747,7 @@ proc newWindow*(c = DefaultOpenglWindowConfig): Window =
       handle: WindowHandle, key, scanCode, action, modKeys: int32) {.cdecl.} =
     if get(keyCb):
       cb(win, Key(key), scanCode, action.KeyAction,
-        initModifierKeySet(modKeys))
+         cast[set[ModifierKey]](modKeys))
   discard wrapper.setKeyCallback(result, keyCb)
 
   charCb = proc(handle: WindowHandle, codePoint: uint32) {.cdecl.} =
@@ -768,7 +758,7 @@ proc newWindow*(c = DefaultOpenglWindowConfig): Window =
   charModsCb = proc(
       handle: WindowHandle, codePoint: uint32, modKeys: int32) {.cdecl.} =
     if get(charModsCb):
-      cb(win, codePoint.Rune, initModifierKeySet(modKeys))
+      cb(win, codePoint.Rune, cast[set[ModifierKey]](modKeys))
   discard wrapper.setCharModsCallback(result, charModsCb)
 
   dropCb = proc(

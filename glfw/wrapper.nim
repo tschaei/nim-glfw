@@ -100,12 +100,12 @@ const mbMiddle* = mb3
 
 type
   ModifierKey* {.size: int32.sizeof.} = enum
-    mkShift = (0x00000001, "shift")
-    mkCtrl = (0x00000002, "ctrl")
-    mkAlt = (0x00000004, "alt")
-    mkSuper = (0x00000008, "super")
-    mkCapsLock = (0x00000010, "capslock")
-    mkNumLock = (0x00000020, "numlock")
+    mkShift    = (1, "shift")
+    mkCtrl     = (2, "ctrl")
+    mkAlt      = (3, "alt")
+    mkSuper    = (4, "super")
+    mkCapsLock = (5, "capslock")
+    mkNumLock  = (6, "numlock")
 
 type
   Key* {.size: int32.sizeof.} = enum
