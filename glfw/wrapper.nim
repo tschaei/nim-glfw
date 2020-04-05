@@ -38,7 +38,7 @@ else:
       compile: "glfw/src/egl_context.c",
       compile: "glfw/src/osmesa_context.c".}
   elif defined(linux):
-    {.passL: "-pthread -lGL -lX11 -lXrandr -lXxf86vm -lXi -lXcursor -lm -lXinerama".}
+    {.passL: "-pthread -lX11 -lXrandr -lXxf86vm -lXi -lXcursor -lm -lXinerama".}
 
     when defined(wayland):
       {.passC: "-D_GLFW_WAYLAND",
